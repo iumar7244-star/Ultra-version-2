@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جسر الوصول — Admin Dashboard</title>
+<link rel="icon" href="logo.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Tajawal',Arial,sans-serif;background:#f4f7f6;color:#0b2338}
+  .topbar{background:#082b4c;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
+  .topbar b{font-size:17px}
+  .topbar a{color:#f5c451;text-decoration:none;font-weight:700;font-size:13px}
+  .wrap{max-width:960px;margin:26px auto;padding:0 16px}
+  .card{background:#fff;border:1px solid #e3e9ec;border-radius:16px;padding:22px;margin-bottom:20px;box-shadow:0 8px 24px rgba(8,43,76,.05)}
+  h2{margin:0 0 14px;font-size:18px;color:#082b4c}
+  label{display:block;font-size:12px;font-weight:700;color:#55636d;margin:12px 0 5px}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid #d7dee2;border-radius:9px;font-size:14px;font-family:inherit}
+  textarea{resize:vertical}
+  button{cursor:pointer;border:0;border-radius:9px;padding:10px 16px;font-weight:800;font-size:13px}
+  .btn-primary{background:#082b4c;color:#fff}
+  .btn-danger{background:#fdeceb;color:#a1302a}
+  .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+  th,td{text-align:start;padding:8px 6px;border-bottom:1px solid #eef1f3}
+  th{color:#6b7b85;font-weight:700}
+  .msg{margin-top:12px;padding:10px 12px;border-radius:9px;font-size:13px;display:none;white-space:pre-wrap}
+  .msg.error{background:#fdeceb;color:#a1302a;display:block}
+  .msg.success{background:#e9f7f1;color:#0d6b46;display:block}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .muted{color:#8492a0;font-size:12.5px}
+  a.file-link{color:#0d6b46;font-weight:700;text-decoration:none}
+  @media(max-width:640px){.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <b>لوحة تحكم المدرسة — <span id="schoolName">…</span></b>
+  <div>
+    <a href="index.html">الموقع الرئيسي</a>
+    &nbsp;·&nbsp;
+    <a href="#" id="logoutLink">تسجيل الخروج</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- Terms & Topics -->
+  <div class="card">
+    <h2>الفصول والمواضيع</h2>
+    <p class="muted">أضف موضوعًا جديدًا (يمكن أن يكون مادة كاملة أو درسًا) واربطه بأحد الفصول الثلاثة.</p>
+    <div class="row2">
+      <div>
+        <label>الفصل الدراسي</label>
+        <select id="termSelect"></select>
+      </div>
+      <div>
+        <label>رمز الموضوع (اختياري)</label>
+        <input id="topicCode" placeholder="مثال: 08">
+      </div>
+    </div>
+    <label>اسم الموضوع / المادة</label>
+    <input id="topicSubject" placeholder="مثال: الرياضيات - الفصل الأول">
+    <div class="btn-row"><button class="btn-primary" id="addTopicBtn">إضافة الموضوع</button></div>
+    <div id="topicMsg" class="msg"></div>
+
+    <table id="topicsTable">
+      <thead><tr><th>الرمز</th><th>الموضوع</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Questions -->
+  <div class="card">
+    <h2>الأسئلة</h2>
+    <label>اختر الموضوع</label>
+    <select id="questionTopicSelect"></select>
+
+    <label>السؤال</label>
+    <textarea id="questionText" rows="2" placeholder="نص السؤال"></textarea>
+    <label>الإجابة النموذجية</label>
+    <textarea id="answerText" rows="3" placeholder="الإجابة الكاملة"></textarea>
+    <label>إجابات بديلة مقبولة (اختياري، افصل بينها بفاصلة منقوطة ؛)</label>
+    <input id="acceptableText" placeholder="إجابة بديلة 1 ؛ إجابة بديلة 2">
+    <div class="btn-row"><button class="btn-primary" id="addQuestionBtn">إضافة السؤال</button></div>
+    <div id="questionMsg" class="msg"></div>
+
+    <table id="questionsTable">
+      <thead><tr><th>السؤال</th><th>الإجابة</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- PDFs -->
+  <div class="card">
+    <h2>ملفات PDF</h2>
+    <p class="muted">يمكن للطلاب تحميل هذه الملفات من الموقع الرئيسي دون تسجيل دخول.</p>
+    <label>العنوان</label>
+    <input id="pdfTitle" placeholder="مثال: ملخص الفصل الأول">
+    <label>ربط بموضوع (اختياري)</label>
+    <select id="pdfTopicSelect"><option value="">— بدون ربط —</option></select>
+    <label>ملف PDF</label>
+    <input id="pdfFile" type="file" accept="application/pdf">
+    <div class="btn-row"><button class="btn-primary" id="uploadPdfBtn">رفع الملف</button></div>
+    <div id="pdfMsg" class="msg"></div>
+
+    <table id="pdfsTable">
+      <thead><tr><th>العنوان</th><th>الموضوع</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script type="module">
+import { requireAuth, signOut } from './auth.js';
+import { getCurrentSchool } from './school.js';
+import { getTerms, getTopicsForTerm } from './term.js';
+import { addTopic, getSchoolTopics, deleteTopic, getQuestions, addQuestion, deleteQuestion } from './cloud-questions.js';
+import { uploadPdf, listMyPdfs, deletePdf, pdfPublicUrl } from './pdfs.js';
+
+let SCHOOL = null;
+let TERMS_CACHE = [];
+let TOPICS_CACHE = [];
+
+function showMsg(id, text, type) {
+  const el = document.querySelector(id);
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+
+async function loadTerms() {
+  TERMS_CACHE = await getTerms();
+  const sel = document.querySelector('#termSelect');
+  sel.innerHTML = TERMS_CACHE.map(term => `<option value="${term.id}">${term.ar}</option>`).join('');
+}
+
+async function loadTopics() {
+  TOPICS_CACHE = await getSchoolTopics();
+
+  const body = document.querySelector('#topicsTable tbody');
+  body.innerHTML = TOPICS_CACHE.map(topic => `
+    <tr>
+      <td>${topic.code || '—'}</td>
+      <td>${topic.subject}</td>
+      <td><button class="btn-danger" data-del-topic="${topic.id}">حذف</button></td>
+    </tr>
+  `).join('') || '<tr><td colspan="3" class="muted">لا توجد مواضيع بعد.</td></tr>';
+
+  const topicOptions = TOPICS_CACHE.map(topic => `<option value="${topic.id}" data-code="${topic.code || ''}">${topic.subject}</option>`).join('');
+  document.querySelector('#questionTopicSelect').innerHTML = topicOptions || '<option value="">— أضف موضوعًا أولاً —</option>';
+  document.querySelector('#pdfTopicSelect').innerHTML = '<option value="">— بدون ربط —</option>' + topicOptions;
+
+  body.querySelectorAll('[data-del-topic]').forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm('حذف هذا الموضوع وكل أسئلته؟')) return;
+      await deleteTopic(btn.dataset.delTopic);
+      await loadTopics();
+    };
+  });
+
+  if (TOPICS_CACHE.length) await loadQuestions(TOPICS_CACHE[0].id);
+}
+
+async function loadQuestions(topicId) {
+  if (!topicId) { document.querySelector('#questionsTable tbody').innerHTML = ''; return; }
+  const rows = await getQuestions(topicId);
+  const body = document.querySelector('#questionsTable tbody');
+  body.innerHTML = rows.map(q => `
+    <tr>
+      <td>${q.question}</td>
+      <td>${q.answer}</td>
+      <td><button class="btn-danger" data-del-q="${q.id}">حذف</button></td>
+    </tr>
+  `).join('') || '<tr><td colspan="3" class="muted">لا توجد أسئلة بعد لهذا الموضوع.</td></tr>';
+
+  body.querySelectorAll('[data-del-q]').forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm('حذف هذا السؤال؟')) return;
+      await deleteQuestion(btn.dataset.delQ);
+      await loadQuestions(topicId);
+    };
+  });
+}
+
+async function loadPdfs() {
+  const rows = await listMyPdfs();
+  const body = document.querySelector('#pdfsTable tbody');
+  body.innerHTML = rows.map(p => `
+    <tr>
+      <td><a class="file-link" target="_blank" href="${pdfPublicUrl(p.storage_path)}">${p.title}</a></td>
+      <td>${p.subject || '—'}</td>
+      <td><button class="btn-danger" data-del-pdf="${p.id}" data-path="${p.storage_path}">حذف</button></td>
+    </tr>
+  `).join('') || '<tr><td colspan="3" class="muted">لا توجد ملفات بعد.</td></tr>';
+
+  body.querySelectorAll('[data-del-pdf]').forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm('حذف هذا الملف؟')) return;
+      await deletePdf(btn.dataset.delPdf, btn.dataset.path);
+      await loadPdfs();
+    };
+  });
+}
+
+document.querySelector('#questionTopicSelect').onchange = e => loadQuestions(e.target.value);
+
+document.querySelector('#addTopicBtn').onclick = async () => {
+  try {
+    const termId = document.querySelector('#termSelect').value;
+    const code = document.querySelector('#topicCode').value;
+    const subject = document.querySelector('#topicSubject').value;
+    await addTopic({ termId, code, subject });
+    document.querySelector('#topicSubject').value = '';
+    document.querySelector('#topicCode').value = '';
+    showMsg('#topicMsg', 'تمت إضافة الموضوع.', 'success');
+    await loadTopics();
+  } catch (err) {
+    showMsg('#topicMsg', err.message, 'error');
+  }
+};
+
+document.querySelector('#addQuestionBtn').onclick = async () => {
+  try {
+    const sel = document.querySelector('#questionTopicSelect');
+    const topicId = sel.value;
+    const topicCode = sel.selectedOptions[0]?.dataset.code || '';
+    const question = document.querySelector('#questionText').value;
+    const answer = document.querySelector('#answerText').value;
+    const acceptable = document.querySelector('#acceptableText').value
+      .split('؛').map(s => s.trim()).filter(Boolean);
+    await addQuestion({ topicId, topicCode, question, answer, acceptable });
+    document.querySelector('#questionText').value = '';
+    document.querySelector('#answerText').value = '';
+    document.querySelector('#acceptableText').value = '';
+    showMsg('#questionMsg', 'تمت إضافة السؤال.', 'success');
+    await loadQuestions(topicId);
+  } catch (err) {
+    showMsg('#questionMsg', err.message, 'error');
+  }
+};
+
+document.querySelector('#uploadPdfBtn').onclick = async () => {
+  try {
+    const title = document.querySelector('#pdfTitle').value;
+    const topicId = document.querySelector('#pdfTopicSelect').value || null;
+    const sel = document.querySelector('#pdfTopicSelect');
+    const subject = sel.selectedOptions[0]?.textContent === '— بدون ربط —' ? '' : sel.selectedOptions[0]?.textContent;
+    const file = document.querySelector('#pdfFile').files[0];
+    await uploadPdf({ title, topicId, subject, file });
+    document.querySelector('#pdfTitle').value = '';
+    document.querySelector('#pdfFile').value = '';
+    showMsg('#pdfMsg', 'تم رفع الملف.', 'success');
+    await loadPdfs();
+  } catch (err) {
+    showMsg('#pdfMsg', err.message, 'error');
+  }
+};
+
+document.querySelector('#logoutLink').onclick = async (e) => {
+  e.preventDefault();
+  await signOut();
+  window.location.href = 'login.html';
+};
+
+(async function init() {
+  try {
+    await requireAuth();
+    SCHOOL = await getCurrentSchool();
+    if (!SCHOOL) { window.location.href = 'setup.html'; return; }
+    document.querySelector('#schoolName').textContent = SCHOOL.name;
+    await loadTerms();
+    await loadTopics();
+    await loadPdfs();
+  } catch (err) {
+    window.location.href = 'login.html';
+  }
+})();
+</script>
+
+</body>
+</html>

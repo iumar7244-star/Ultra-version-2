@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جسر الوصول — Account</title><link rel="icon" href="logo.jpg" type="image/jpeg">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{width:100%;max-width:470px;background:#fff;padding:30px;border-radius:18px;box-shadow:0 10px 35px rgba(0,0,0,.08)}h1{margin:0 0 6px;color:#14532d;text-align:center}.sub{text-align:center;color:#666;margin:0 0 24px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}.tab{background:#eef2ef;color:#14532d;margin:0}.tab.active{background:#166534;color:#fff}label{display:block;margin:13px 0 6px;font-weight:600}input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;font-size:16px}button{width:100%;padding:13px;margin-top:17px;border:0;border-radius:9px;background:#166534;color:white;font-size:16px;cursor:pointer}.google{background:#fff;color:#222;border:1px solid #ccc}.divider{display:flex;align-items:center;gap:10px;color:#888;font-size:12px;margin:20px 0}.divider:before,.divider:after{content:'';height:1px;background:#ddd;flex:1}.message{margin-top:16px;padding:12px;border-radius:8px;display:none;white-space:pre-wrap}.error{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}.hint{font-size:12px;color:#777;margin-top:8px;line-height:1.5}.links{display:flex;justify-content:space-between;gap:12px;margin-top:18px;font-size:13px}.links a{color:#166534;font-weight:bold;text-decoration:none}.admin-box{margin-top:22px;padding:14px;background:#f8faf9;border:1px solid #e1e9e3;border-radius:10px;text-align:center}.admin-box a{color:#14532d;font-weight:800;text-decoration:none}@media(max-width:420px){.links{flex-direction:column;text-align:center}}
+</style></head>
+<body><div class="card">
+<img src="logo.jpg" alt="جسر الوصول" style="width:64px;height:64px;border-radius:50%;display:block;margin:0 auto 14px">
+<h1>جسر الوصول</h1><p class="sub">Create an account or login</p>
+<div class="tabs"><button class="tab active" id="signupTab">Sign up</button><button class="tab" id="loginTab">Login</button></div>
+<form id="form">
+<div id="nameWrap"><label for="name">Name</label><input id="name" type="text" autocomplete="name" placeholder="Your name"></div>
+<label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+<label for="password">Password</label><input id="password" type="password" autocomplete="new-password" placeholder="At least 6 characters" required>
+<button id="submitBtn" type="submit">Sign up</button></form>
+<div class="divider">OR</div><button class="google" id="googleBtn" type="button">Continue with Google</button>
+<div class="hint" id="hint">After creating your account, you can create/connect your school from the setup page.</div>
+<div id="message" class="message"></div>
+<div class="links"><a href="index.html">← Main site</a><a href="admin.html">Admin login</a></div>
+<div class="admin-box">For the platform owner: <a href="admin.html">Open Admin Control Panel</a></div>
+</div>
+<script type="module">
+import {signUp,signIn,signInWithGoogle,getCurrentUser} from './auth.js';
+const name=document.querySelector('#name'),email=document.querySelector('#email'),password=document.querySelector('#password'),msg=document.querySelector('#message'),nameWrap=document.querySelector('#nameWrap'),submit=document.querySelector('#submitBtn'),hint=document.querySelector('#hint');
+let mode='signup';
+function message(t,type){msg.textContent=t;msg.className='message '+type;msg.style.display='block'}
+function setMode(m){mode=m;document.querySelector('#signupTab').classList.toggle('active',m==='signup');document.querySelector('#loginTab').classList.toggle('active',m==='login');nameWrap.style.display=m==='signup'?'block':'none';submit.textContent=m==='signup'?'Sign up':'Login';password.autocomplete=m==='signup'?'new-password':'current-password';hint.textContent=m==='signup'?'After creating your account, you can create/connect your school from the setup page.':'Login with your email and password, or use Google.';msg.style.display='none'}
+document.querySelector('#signupTab').onclick=()=>setMode('signup');document.querySelector('#loginTab').onclick=()=>setMode('login');
+document.querySelector('#form').onsubmit=async e=>{e.preventDefault();try{const n=name.value.trim(),em=email.value.trim(),pw=password.value;if(!em||!pw)throw new Error('Please enter your email and password.');if(mode==='signup'){if(!n)throw new Error('Please enter your name.');if(pw.length<6)throw new Error('Password must be at least 6 characters.');const data=await signUp(n,em,pw);if(data.session) location.href='setup.html';else message('Account created. Check your email to confirm your account, then login.','success')}else{await signIn(em,pw);location.href='setup.html'}}catch(err){message(err.message,'error')}};
+document.querySelector('#googleBtn').onclick=async()=>{try{await signInWithGoogle()}catch(err){message(err.message,'error')}};
+getCurrentUser().then(u=>{if(u)location.href='setup.html'}).catch(()=>{});
+</script></body></html>

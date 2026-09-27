@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#082b4c">
+  <meta name="description" content="جسر الوصول لحل مشكلة الرسوب — Revision, memorisation and quizzes.">
+  <title>جسر الوصول لحل مشكلة الرسوب</title>
+  <link rel="icon" href="logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="bootSplash" class="boot-splash">
+    <video id="bootVideoPortrait" class="boot-video" playsinline muted autoplay>
+      <source src="intro-portrait.mp4" type="video/mp4">
+    </video>
+    <video id="bootVideoLandscape" class="boot-video" playsinline muted autoplay>
+      <source src="intro-landscape.mp4" type="video/mp4">
+    </video>
+    <button id="skipBoot" class="skip-boot" type="button" data-i18n="skip">تخطي</button>
+  </div>
+
+  <header class="site-header">
+    <div class="utility">
+      <div class="container utility-inner">
+        <span class="utility-note" data-i18n="utility">Study smarter. Remember more. Improve your results.</span>
+        <button id="langToggle" class="lang-toggle" type="button" aria-label="Change website language">English</button>
+      </div>
+    </div>
+
+    <div class="nav-wrap">
+      <div class="container nav">
+        <a href="#" id="brandHome" class="brand" aria-label="جسر الوصول home">
+          <img src="logo.jpg" alt="جسر الوصول" class="brand-mark brand-logo-img">
+          <span class="brand-text">
+            <b>جسر الوصول لحل مشكلة الرسوب</b>
+            <small data-i18n="brandSub">منصة المراجعة والحفظ</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#home" data-i18n="navHome">الرئيسية</a>
+          <a href="#subjects" data-i18n="navSubjects">المواد</a>
+          <a href="#how" data-i18n="navHow">كيف تعمل؟</a>
+          <a href="#progress" data-i18n="navProgress">تقدمي</a>
+          <a href="#pdfs" data-i18n="navPdfs">ملفات PDF</a>
+          <a href="library.html">المكتبة</a>
+          <a href="login.html" class="admin-link" data-i18n="navAdmin">دخول الإدارة</a>
+        </nav>
+
+        <button id="mobileMenu" class="menu-btn" type="button" aria-label="Menu">☰</button>
+        <button id="headerStart" class="header-cta" type="button" data-i18n="startLearning">ابدأ المراجعة</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero-section">
+      <div class="container hero">
+        <div class="hero-copy">
+          <span class="kicker" data-i18n="kicker">REVISION • MEMORISATION • QUIZ</span>
+          <h1 data-i18n="heroTitle">تعلّم. راجع. <em>احفظ.</em><br>واختبر نفسك.</h1>
+          <p data-i18n="heroText">منصة جسر الوصول تساعدك على مراجعة دروسك، حفظ الإجابات، والتدرّب على الأسئلة بطريقة بسيطة وواضحة.</p>
+          <div class="hero-actions">
+            <button id="heroStart" class="btn btn-primary" type="button"><span data-i18n="startLearning">ابدأ المراجعة</span><span>←</span></button>
+            <a href="#how" class="btn btn-outline"><span data-i18n="learnHow">تعرّف على الطريقة</span><span>↓</span></a>
+          </div>
+          <div class="hero-proof">
+            <div class="avatar-stack"><i>1</i><i>2</i><i>3</i></div>
+            <span data-i18n="heroProof">راجع على طريقتك — واخدم هدفك قبل الامتحان.</span>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="floating-badge badge-top">
+            <strong id="heroQuestionCount">0</strong>
+            <span data-i18n="readyQuestions">سؤال جاهز</span>
+          </div>
+          <div class="study-scene">
+            <div class="scene-glow"></div>
+            <div class="notebook">
+              <div class="notebook-top"><span>جسر</span><span>REVISION</span></div>
+              <div class="line"></div><div class="line short"></div><div class="line"></div>
+              <div class="check-row"><b>✓</b><span></span></div>
+              <div class="check-row"><b>✓</b><span></span></div>
+              <div class="check-row"><b>?</b><span></span></div>
+            </div>
+            <div class="floating-card card-score">
+              <span class="mini-icon">✓</span>
+              <div><b>85%</b><small data-i18n="sampleScore">تقدّم المراجعة</small></div>
+            </div>
+            <div class="floating-card card-memory">
+              <span class="mini-icon">★</span>
+              <div><b data-i18n="memoryMode">الحفظ</b><small data-i18n="memoryModeSub">استرجع الإجابة</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-strip-wrap">
+      <div class="container">
+        <div class="feature-strip">
+          <div class="feature-item"><span class="feature-icon">✓</span><div><b data-i18n="featComprehensive">تغطية شاملة لكل مواضيع المنهج</b><small data-i18n="featComprehensiveSub">الخلفاء الراشدون حتى انهيار الدولة في الأندلس</small></div></div>
+          <div class="feature-item"><span class="feature-icon">▤</span><div><b data-i18n="featPaper">ورقة كاملة لكل موضوع</b><small data-i18n="featPaperSub">أجب عن كل الأسئلة ثم صحّح دفعة واحدة</small></div></div>
+          <div class="feature-item"><span class="feature-icon">↻</span><div><b data-i18n="featModes">ثلاث طرق للمراجعة</b><small data-i18n="featModesSub">اختيار، كتابة، أو حفظ ومراجعة</small></div></div>
+          <div class="feature-item"><span class="feature-icon">◐</span><div><b data-i18n="featProgress">تتبع تقدمك أولاً بأول</b><small data-i18n="featProgressSub">إحصاءات محفوظة على جهازك</small></div></div>
+          <div class="feature-item"><span class="feature-icon">✎</span><div><b data-i18n="featNoLogin">بدون تسجيل دخول</b><small data-i18n="featNoLoginSub">افتح الموقع وابدأ مباشرة</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-strip">
+      <div class="container stats-row">
+        <div><span class="stat-icon">▤</span><strong id="statTopQuestions">0</strong><span data-i18n="questions">أسئلة</span></div>
+        <div><span class="stat-icon">↻</span><strong>3</strong><span data-i18n="studyModes">طرق للمراجعة</span></div>
+        <div><span class="stat-icon">◐</span><strong>100%</strong><span data-i18n="localProgress">تقدم محفوظ على جهازك</span></div>
+        <div><span class="stat-icon">✓</span><strong>24/7</strong><span data-i18n="available">متاح للمراجعة</span></div>
+      </div>
+    </section>
+
+    <section id="subjects" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow" data-i18n="ourSubjects">التاريخ الإسلامي</span>
+            <h2 data-i18n="chooseSubject">اختر الفصل الدراسي وابدأ المراجعة</h2>
+            <p data-i18n="subjectsText">اختر الفصل الدراسي، ثم الموضوع، ثم طريقة المراجعة المناسبة لك.</p>
+          </div>
+          <span class="question-total"><b id="questionTotal">0</b> <span data-i18n="totalQuestions">سؤال</span></span>
+        </div>
+
+        <div class="wizard-breadcrumb" id="wizardCrumb">
+          <button class="crumb" data-step="term" type="button" data-i18n="stepTerm">الفصل الدراسي</button>
+          <span>›</span>
+          <button class="crumb" data-step="topic" type="button" data-i18n="stepTopic">الموضوع</button>
+          <span>›</span>
+          <button class="crumb" data-step="mode" type="button" data-i18n="stepMode">طريقة المراجعة</button>
+        </div>
+
+        <div id="termStep" class="wizard-step">
+          <div id="termGrid" class="term-grid"></div>
+        </div>
+
+        <div id="topicStep" class="wizard-step">
+          <button class="back-link" id="backToTerm" type="button">→ <span data-i18n="backToTerms">رجوع للفصول</span></button>
+          <div id="topicGrid" class="subject-grid"></div>
+        </div>
+
+        <div id="modeStep" class="wizard-step">
+          <button class="back-link" id="backToTopic" type="button">→ <span data-i18n="backToTopics">رجوع للمواضيع</span></button>
+          <div class="mode-grid" id="modeGrid">
+            <button class="mode-card" data-mode="choice" type="button">
+              <span class="mode-number">01</span><span class="mode-icon">✓</span>
+              <h3 data-i18n="choiceTitle">اختر الإجابة</h3>
+              <p data-i18n="choiceText">اختر الإجابة الصحيحة من الخيارات المعروضة، وستظهر لك النتيجة مباشرة.</p>
+              <span class="learn-more" data-i18n="tryMode">جرّب الطريقة ←</span>
+            </button>
+            <button class="mode-card" data-mode="typing" type="button">
+              <span class="mode-number">02</span><span class="mode-icon">⌨</span>
+              <h3 data-i18n="typingTitle">اكتب الإجابة</h3>
+              <p data-i18n="typingText">اكتب الإجابة بنفسك ثم دع النظام يقارنها بالإجابة المعتمدة.</p>
+              <span class="learn-more" data-i18n="tryMode">جرّب الطريقة ←</span>
+            </button>
+            <button class="mode-card" data-mode="revision" type="button">
+              <span class="mode-number">03</span><span class="mode-icon">↻</span>
+              <h3 data-i18n="revisionTitle">المراجعة والحفظ</h3>
+              <p data-i18n="revisionText">حاول تذكّر كل إجابة، أظهرها، وحدد هل تذكرتها أم تحتاج إلى مراجعة.</p>
+              <span class="learn-more" data-i18n="tryMode">جرّب الطريقة ←</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section soft-section">
+      <div class="container">
+        <div class="center-heading">
+          <span class="eyebrow" data-i18n="simpleMethod">طريقة بسيطة</span>
+          <h2 data-i18n="threeWays">ثلاث طرق تساعدك على الاستعداد</h2>
+          <p data-i18n="threeWaysText">اختر الفصل والموضوع أولاً من قسم المواد، ثم اختر إحدى هذه الطرق.</p>
+        </div>
+
+        <div class="mode-grid">
+          <div class="mode-card mode-card-static">
+            <span class="mode-number">01</span><span class="mode-icon">✓</span>
+            <h3 data-i18n="choiceTitle">اختر الإجابة</h3>
+            <p data-i18n="choiceText">اختر الإجابة الصحيحة من الخيارات المعروضة، وستظهر لك النتيجة مباشرة.</p>
+          </div>
+          <div class="mode-card mode-card-static">
+            <span class="mode-number">02</span><span class="mode-icon">⌨</span>
+            <h3 data-i18n="typingTitle">اكتب الإجابة</h3>
+            <p data-i18n="typingText">اكتب الإجابة بنفسك ثم دع النظام يقارنها بالإجابة المعتمدة.</p>
+          </div>
+          <div class="mode-card mode-card-static">
+            <span class="mode-number">03</span><span class="mode-icon">↻</span>
+            <h3 data-i18n="revisionTitle">المراجعة والحفظ</h3>
+            <p data-i18n="revisionText">حاول تذكّر الإجابة أولاً، ثم أظهرها وحدد هل تذكرتها أم تحتاج إلى مراجعة.</p>
+          </div>
+        </div>
+        <div class="center-cta">
+          <button id="howStart" class="btn btn-primary" type="button"><span data-i18n="startLearning">ابدأ المراجعة</span><span>←</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="progress" class="section">
+      <div class="container progress-home">
+        <div class="progress-copy">
+          <span class="eyebrow" data-i18n="yourProgress">تقدمك</span>
+          <h2 data-i18n="progressTitle">اعرف أين وصلت قبل الامتحان.</h2>
+          <p data-i18n="progressText">يحفظ الموقع إحصاءات المراجعة على جهازك حتى تستطيع متابعة أدائك دون حساب أو تسجيل دخول.</p>
+          <button id="resetProgressHome" class="text-btn" type="button" data-i18n="resetProgress">إعادة ضبط التقدم</button>
+        </div>
+        <div class="progress-card">
+          <div class="progress-top"><span data-i18n="overallProgress">التقدم العام</span><strong id="homePercent">0%</strong></div>
+          <div class="meter"><span id="homeMeter"></span></div>
+          <div class="progress-stats">
+            <div><b id="statAnswered">0</b><span data-i18n="answered">أُجيب عنها</span></div>
+            <div><b id="statCorrect">0</b><span data-i18n="correct">صحيحة</span></div>
+            <div><b id="statWrong">0</b><span data-i18n="wrong">خاطئة</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pdfs" class="section" style="display:none">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow" data-i18n="pdfsEyebrow">ملفات ومراجع</span>
+            <h2 data-i18n="pdfsTitle">ملفات PDF للتحميل</h2>
+            <p data-i18n="pdfsText">ملخصات ومراجع أضافها المعلم — يمكنك تحميلها مباشرة دون تسجيل دخول.</p>
+          </div>
+        </div>
+        <div id="pdfList" class="pdf-list"></div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container cta-box">
+        <div><span class="eyebrow" data-i18n="ready">جاهز؟</span><h2 data-i18n="ctaTitle">ابدأ الآن وراجع قبل أن يبدأ الامتحان.</h2></div>
+        <button id="ctaStart" class="btn btn-light" type="button"><span data-i18n="startLearning">ابدأ المراجعة</span><span>←</span></button>
+      </div>
+    </section>
+  </main>
+
+  <section id="quiz" class="quiz-view">
+    <div class="container">
+      <div class="quiz-head">
+        <button id="backBtn" class="back-btn" type="button">← <span data-i18n="back">العودة</span></button>
+        <div class="quiz-meta"><span id="quizSubject" class="pill"></span><span id="quizMode" class="pill"></span></div>
+        <span id="quizCounter" class="counter"></span>
+      </div>
+      <div class="progress-bar"><div id="progressBar"></div></div>
+
+      <p class="paper-instructions" id="paperInstructions" data-i18n="paperInstructions">أجب عن كل الأسئلة، ثم اضغط "تصحيح الورقة" لعرض النتيجة الكاملة.</p>
+
+      <div id="paperList" class="paper-list"></div>
+
+      <div class="paper-submit-bar" id="paperSubmitBar">
+        <span class="paper-progress-text"><span id="paperAnsweredCount">0</span> / <span id="paperTotalCount">0</span> <span data-i18n="answered">أُجيب عنها</span></span>
+        <button id="markPaperBtn" class="btn btn-primary" type="button" data-i18n="markPaper">تصحيح الورقة</button>
+      </div>
+
+      <button id="finishPaperBtn" class="btn btn-primary next hidden" type="button"><span data-i18n="viewResult">عرض النتيجة</span> <span>→</span></button>
+    </div>
+  </section>
+
+  <section id="result" class="result-view">
+    <div class="result-card">
+      <div class="result-icon">✓</div>
+      <span class="eyebrow" data-i18n="roundComplete">اكتملت الجولة</span>
+      <h2 data-i18n="resultTitle">أحسنت على إكمال المراجعة.</h2>
+      <p id="resultSubject"></p>
+      <div class="big-score"><strong id="resultPercent">0%</strong><span data-i18n="score">النتيجة</span></div>
+      <div class="result-grid">
+        <div><strong id="resultCorrect">0</strong><span data-i18n="correct">صحيحة</span></div>
+        <div><strong id="resultWrong">0</strong><span data-i18n="wrong">خاطئة</span></div>
+        <div><strong id="resultTotal">0</strong><span data-i18n="total">المجموع</span></div>
+      </div>
+      <div id="resultMessage" class="result-message"></div>
+      <div class="result-actions">
+        <button id="reviewPaperBtn" class="btn btn-outline-dark" type="button" data-i18n="reviewPaper">مراجعة الورقة</button>
+        <button id="againBtn" class="btn btn-primary" type="button" data-i18n="again">إعادة الاختبار</button>
+        <button id="resultHomeBtn" class="btn btn-outline-dark" type="button" data-i18n="home">الرئيسية</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand footer-brand"><img src="logo.jpg" alt="جسر الوصول" class="brand-mark brand-logo-img"><span class="brand-text"><b>جسر الوصول لحل مشكلة الرسوب</b><small data-i18n="brandSub">منصة المراجعة والحفظ</small></span></div>
+        <p data-i18n="footerText">منصة بسيطة للمراجعة والحفظ والتدرب على الأسئلة.</p>
+      </div>
+      <div><h4 data-i18n="quickLinks">روابط سريعة</h4><a href="#subjects" data-i18n="navSubjects">المواد</a><a href="#how" data-i18n="navHow">كيف تعمل؟</a><a href="#progress" data-i18n="navProgress">تقدمي</a></div>
+      <div><h4 data-i18n="studyModes">طرق المراجعة</h4><a href="#how" data-i18n="choiceTitle">اختر الإجابة</a><a href="#how" data-i18n="typingTitle">اكتب الإجابة</a><a href="#how" data-i18n="revisionTitle">المراجعة والحفظ</a></div>
+      <div><h4 data-i18n="language">اللغة</h4><button id="footerLang" class="footer-lang" type="button">English</button></div>
+    </div>
+    <div class="container copyright">© <span id="year"></span> جسر الوصول لحل مشكلة الرسوب — <span data-i18n="rights">جميع الحقوق محفوظة</span></div>
+  </footer>
+
+<script type="module" src="app.js"></script> 
+</body>
+</html>

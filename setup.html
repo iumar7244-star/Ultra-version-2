@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Setup</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            color: #14532d;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 22px;
+            border: 0;
+            border-radius: 8px;
+            background: #166534;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #14532d;
+        }
+
+        .logout {
+            background: #777;
+        }
+
+        .message {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .topics {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8faf9;
+            border-radius: 10px;
+        }
+
+        .topic {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .topic:last-child {
+            border-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <img src="logo.jpg" alt="جسر الوصول" style="width:64px;height:64px;border-radius:50%;display:block;margin:0 auto 14px;">
+        <h1>School Setup</h1>
+
+        <p>
+            Create your school. Your school will be connected to your account.
+        </p>
+
+        <label for="schoolName">School name</label>
+        <input
+            id="schoolName"
+            type="text"
+            placeholder="Enter school name"
+        >
+
+        <label for="address">Address</label>
+        <input
+            id="address"
+            type="text"
+            placeholder="School address"
+        >
+
+        <label for="phone">Phone</label>
+        <input
+            id="phone"
+            type="text"
+            placeholder="School phone"
+        >
+
+        <label for="schoolEmail">School email</label>
+        <input
+            id="schoolEmail"
+            type="email"
+            placeholder="School email"
+        >
+
+        <button id="createBtn">
+            Create School
+        </button>
+
+        <button id="logoutBtn" class="logout">
+            Logout
+        </button>
+
+        <div id="message" class="message"></div>
+
+        <div id="schoolIdBox" class="topics" style="display:none;">
+            <h3>Your School ID</h3>
+            <p style="margin:0 0 10px;color:#555;font-size:14px">
+                Copy this into <code>site-school.js</code> as <code>SITE_SCHOOL_ID</code>
+                so your public site shows this school's content to students.
+            </p>
+            <input id="schoolIdField" readonly style="font-family:monospace;background:#f4f7f6">
+            <button id="copySchoolId" type="button" style="margin-top:10px;background:#166534">Copy</button>
+        </div>
+
+        <div id="topicsBox" class="topics" style="display:none;">
+            <h3>Islamic History Topics</h3>
+            <div id="topicsList"></div>
+        </div>
+
+        <a href="dashboard.html" style="display:block;text-align:center;margin-top:20px;color:#166534;font-weight:bold">
+            → Go to Admin Dashboard
+        </a>
+        <a href="index.html" style="display:block;text-align:center;margin-top:10px;color:#888;font-size:13px">
+            → Main site
+        </a>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+    import { requireAuth, signOut } from './auth.js';
+    import {
+        createSchool,
+        getCurrentSchool
+    } from './school.js';
+
+    import { supabase } from './supabase.js';
+
+    const TOPICS = [
+        {
+            code: '01',
+            subject: 'الدولة الأموية في الأندلس'
+        },
+        {
+            code: '02',
+            subject: 'عبد الرحمن الداخل'
+        },
+        {
+            code: '03',
+            subject: 'عبد الرحمن الأوسط'
+        },
+        {
+            code: '04',
+            subject: 'عبد الرحمن الناصر'
+        },
+        {
+            code: '05',
+            subject: 'انهيار الدولة في الأندلس'
+        },
+        {
+            code: '06',
+            subject: 'الخلفاء الراشدون'
+        },
+        {
+            code: '07',
+            subject: 'قيام الدولة الأموية'
+        }
+    ];
+
+    const message = document.querySelector('#message');
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = `message ${type}`;
+        message.style.display = 'block';
+    }
+
+    async function createTopics(schoolId) {
+
+        const rows = TOPICS.map(topic => ({
+            school_id: schoolId,
+            code: topic.code,
+            subject: topic.subject
+        }));
+
+        const { data, error } = await supabase
+            .from('topics')
+            .insert(rows)
+            .select();
+
+        if (error) throw error;
+
+        return data || [];
+    }
+
+    async function createTermsAndLinks(schoolId, topics) {
+        // 3 default terms, matching the site's built-in term structure.
+        const termRows = [
+            { school_id: schoolId, name_ar: 'الفصل الأول',  name_en: 'First Term',  sort_order: 1 },
+            { school_id: schoolId, name_ar: 'الفصل الثاني', name_en: 'Second Term', sort_order: 2 },
+            { school_id: schoolId, name_ar: 'الفصل الثالث', name_en: 'Third Term',  sort_order: 3 }
+        ];
+
+        const { data: terms, error: termError } = await supabase
+            .from('terms')
+            .insert(termRows)
+            .select();
+
+        if (termError) throw termError;
+
+        const firstTerm  = terms.find(term => term.sort_order === 1);
+        const thirdTerm  = terms.find(term => term.sort_order === 3);
+
+        const codeToTopic = {};
+        topics.forEach(topic => { codeToTopic[topic.code] = topic; });
+
+        const firstTermCodes = ['06', '07'];
+        const thirdTermCodes = ['01', '02', '03', '04', '05'];
+
+        const links = [];
+        firstTermCodes.forEach(code => {
+            if (codeToTopic[code]) links.push({ school_id: schoolId, term_id: firstTerm.id, topic_id: codeToTopic[code].id });
+        });
+        thirdTermCodes.forEach(code => {
+            if (codeToTopic[code]) links.push({ school_id: schoolId, term_id: thirdTerm.id, topic_id: codeToTopic[code].id });
+        });
+
+        if (links.length) {
+            const { error: linkError } = await supabase
+                .from('term_topics')
+                .insert(links);
+
+            if (linkError) throw linkError;
+        }
+
+        return terms;
+    }
+
+    function displayTopics(topics) {
+
+        const box = document.querySelector('#topicsBox');
+        const list = document.querySelector('#topicsList');
+
+        list.innerHTML = '';
+
+        topics.forEach(topic => {
+            const div = document.createElement('div');
+
+            div.className = 'topic';
+
+            div.textContent =
+                `${topic.code} — ${topic.subject}`;
+
+            list.appendChild(div);
+        });
+
+        box.style.display = 'block';
+    }
+
+    function showSchoolId(id) {
+        const box = document.querySelector('#schoolIdBox');
+        const field = document.querySelector('#schoolIdField');
+        field.value = id;
+        box.style.display = 'block';
+    }
+
+    document.querySelector('#copySchoolId').onclick = () => {
+        const field = document.querySelector('#schoolIdField');
+        field.select();
+        navigator.clipboard.writeText(field.value).catch(() => {});
+    };
+
+    async function checkSchool() {
+
+        try {
+
+            await requireAuth();
+
+            const school = await getCurrentSchool();
+
+            if (school) {
+
+                showMessage(
+                    `School already connected: ${school.name}`,
+                    'success'
+                );
+
+                showSchoolId(school.id);
+
+                const { data } = await supabase
+                    .from('topics')
+                    .select('*')
+                    .eq('school_id', school.id)
+                    .order('code');
+
+                if (data && data.length) {
+                    displayTopics(data);
+                }
+
+                document.querySelector('#createBtn').disabled = true;
+            }
+
+        } catch (error) {
+
+            window.location.href = 'login.html';
+
+        }
+
+    }
+
+    document.querySelector('#createBtn').onclick = async () => {
+
+        try {
+
+            const name =
+                document.querySelector('#schoolName').value.trim();
+
+            const address =
+                document.querySelector('#address').value.trim();
+
+            const phone =
+                document.querySelector('#phone').value.trim();
+
+            const email =
+                document.querySelector('#schoolEmail').value.trim();
+
+            if (!name) {
+                showMessage(
+                    'Please enter the school name.',
+                    'error'
+                );
+                return;
+            }
+
+            document.querySelector('#createBtn').disabled = true;
+
+            const school = await createSchool({
+                name,
+                address,
+                phone,
+                email
+            });
+
+            const topics = await createTopics(school.id);
+            await createTermsAndLinks(school.id, topics);
+
+            displayTopics(topics);
+            showSchoolId(school.id);
+
+            showMessage(
+                'School created successfully. The 3 terms and 7 Islamic History topics have been created.',
+                'success'
+            );
+
+        } catch (error) {
+
+            document.querySelector('#createBtn').disabled = false;
+
+            showMessage(
+                error.message,
+                'error'
+            );
+
+        }
+
+    };
+
+    document.querySelector('#logoutBtn').onclick = async () => {
+
+        await signOut();
+
+        window.location.href = 'login.html';
+
+    };
+
+    checkSchool();
+
+</script>
+
+</body>
+</html>

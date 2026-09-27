@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Questions</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+</head>
+<body>
+
+<h2>Import Islamic History Questions</h2>
+
+<button id="importBtn">Import 83 Questions</button>
+
+<pre id="message"></pre>
+
+<script type="module">
+import { QUESTIONS, TOPIC_META } from './questions.js';
+import { supabase } from './supabase.js';
+import { requireSchool } from './school.js';
+
+const message = document.getElementById('message');
+const button = document.getElementById('importBtn');
+
+button.onclick = async () => {
+    button.disabled = true;
+    message.textContent = 'Importing questions...';
+
+    try {
+        const school = await requireSchool();
+
+        if (!school) {
+            throw new Error('No school found.');
+        }
+
+        // Get this school's topics
+        const { data: topics, error: topicError } = await supabase
+            .from('topics')
+            .select('id, code, subject')
+            .eq('school_id', school.id)
+            .order('code');
+
+        if (topicError) throw topicError;
+
+        if (!topics || topics.length !== 7) {
+            throw new Error(
+                `Expected 7 topics, but found ${topics?.length || 0}.`
+            );
+        }
+
+        const topicMap = {};
+
+        topics.forEach(topic => {
+            topicMap[topic.code] = topic.id;
+        });
+
+        // Prepare questions
+        const rows = QUESTIONS.map(q => {
+            const meta = TOPIC_META.find(
+                topic => topic.subject === q.subject
+            );
+
+            if (!meta) {
+                throw new Error(
+                    `Topic not found for question ${q.id}: ${q.subject}`
+                );
+            }
+
+            const topicId = topicMap[meta.code];
+
+            if (!topicId) {
+                throw new Error(
+                    `Database topic ${meta.code} not found.`
+                );
+            }
+
+            return {
+                id: String(q.id),
+                school_id: school.id,
+                topic_id: topicId,
+                topic_code: meta.code,
+                question: q.question,
+                type: q.type || 'typing',
+                options: q.options || null,
+                answer: q.answer,
+                acceptable: q.acceptable || [],
+                explanation: q.explanation || '',
+                marks: q.marks || 1,
+                difficulty: q.difficulty || 'medium',
+                active: true
+            };
+        });
+
+        // Insert in batches
+        const batchSize = 25;
+
+        for (let i = 0; i < rows.length; i += batchSize) {
+            const batch = rows.slice(i, i + batchSize);
+            
+const { error } = await supabase
+    .from('questions')
+    .insert(batch);
+
+            if (error) throw error;
+
+            message.textContent =
+                `Imported ${Math.min(i + batch.length, rows.length)} / ${rows.length}`;
+        }
+
+        message.textContent =
+            `SUCCESS: ${rows.length} questions imported for ${school.name}.`;
+
+    } catch (error) {
+        console.error(error);
+
+        message.textContent =
+            `ERROR:\n${error.message}`;
+
+        button.disabled = false;
+    }
+};
+</script>
+
+</body>
+</html>
